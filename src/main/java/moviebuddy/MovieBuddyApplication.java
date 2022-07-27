@@ -1,16 +1,11 @@
 package moviebuddy;
 
+import moviebuddy.domain.Movie;
+import moviebuddy.domain.MovieFinder;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +13,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import moviebuddy.domain.CsvMovieFinder;
-import moviebuddy.domain.Movie;
-import moviebuddy.domain.MovieFinder;
-import moviebuddy.util.FileSystemUtils;
 
 /**
  * @author springrunner.kr@gmail.com
@@ -38,7 +27,7 @@ public class MovieBuddyApplication {
 
     /*
      * 애플리케이션 추가 요구사항:
-     * 
+     *
      * TODO 1. XML 문서로 작성된 영화 메타데이터도 다룰 수 있게 기능을 확장하라
      * TODO 2. 영화 메타데이터 위치를 변경할 수 있도록 하라
      * TODO 3. 영화 메타데이터 읽기 속도를 빠르게 하라
@@ -46,7 +35,7 @@ public class MovieBuddyApplication {
      */
 
     public void run(String[] args) throws Exception {
-        final MovieFinder movieFinder= new CsvMovieFinder();
+        final MovieFinder movieFinder = new MovieFinder();
         final AtomicBoolean running = new AtomicBoolean(true);
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
         final PrintWriter output = new PrintWriter(System.out, false);
@@ -108,9 +97,9 @@ public class MovieBuddyApplication {
                 output.print("❯ ");
                 output.flush();
                 List<String> arguments = Stream.of(input.readLine().split(" "))
-                                               .map(String::trim)
-                                               .filter(argument -> !argument.isBlank())
-                                               .collect(Collectors.toList());
+                        .map(String::trim)
+                        .filter(argument -> !argument.isBlank())
+                        .collect(Collectors.toList());
 
                 // 명령어 해석 후 실행, 연결된 명령어가 없으면 입력 오류 메시지 출력하기
                 Command command = Command.parse(arguments.isEmpty() ? null : arguments.get(0));
@@ -138,8 +127,8 @@ public class MovieBuddyApplication {
                 return null;
             }
             return Stream.of(Command.values())
-                         .filter(it -> Objects.equals(it.name().toLowerCase(), text.toLowerCase()))
-                         .findAny().orElse(null);
+                    .filter(it -> Objects.equals(it.name().toLowerCase(), text.toLowerCase()))
+                    .findAny().orElse(null);
         }
     }
 
