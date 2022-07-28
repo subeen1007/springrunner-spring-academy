@@ -1,6 +1,9 @@
 package moviebuddy.domain;
 
-import moviebuddy.ApplicationException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -8,12 +11,11 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-import java.util.stream.Collectors;
 
-public class JaxbMovieReader implements MovieReader{
+import moviebuddy.ApplicationException;
+
+public class JaxbMovieReader implements MovieReader {
+
     @Override
     public List<Movie> loadMovies() {
         try {
@@ -25,31 +27,32 @@ public class JaxbMovieReader implements MovieReader{
             final MovieMetadata metadata = (MovieMetadata) unmarshaller.unmarshal(source);
 
             return metadata.toMovies();
-        }catch (JAXBException error ){
-            throw new ApplicationException("failed to load movies data", error);
+        } catch (JAXBException error) {
+            throw new ApplicationException("failed to load movies data.", error);
         }
     }
 
-    @XmlRootElement(name = " moviemetadata")
-    public static class MovieMetadata{
+    @XmlRootElement(name = "moviemetadata")
+    static class MovieMetadata {
+
         private List<MovieData> movies;
 
-        public List<MovieData> getMovies(){
+        public List<MovieData> getMovies() {
             return movies;
         }
 
-        public void setMovies(List<MovieData> movies){
-            this.movies= movies;
+        public void setMovies(List<MovieData> movies) {
+            this.movies = movies;
         }
 
         public List<Movie> toMovies() {
-            return movies.stream().map(it -> it.toMovie()).collect(Collectors.toList());
+            return movies.stream().map(MovieData::toMovie).collect(Collectors.toList());
         }
+
     }
 
+    static class MovieData {
 
-
-    public static class MovieData{
         private String title;
         private List<String> genres;
         private String language;
@@ -59,6 +62,7 @@ public class JaxbMovieReader implements MovieReader{
         private List<String> actors;
         private URL imdbLink;
         private String watchedDate;
+
         public String getTitle() {
             return title;
         }
@@ -130,20 +134,19 @@ public class JaxbMovieReader implements MovieReader{
         public void setWatchedDate(String watchedDate) {
             this.watchedDate = watchedDate;
         }
-        public Movie toMovie(){
-            String title = getTitle();
 
+        public Movie toMovie() {
+            String title = getTitle();
             List<String> genres = getGenres();
             String language = getLanguage();
-            String contry = getCountry();
+            String country = getCountry();
             int releaseYear = getReleaseYear();
             String director = getDirector();
-            List<String> actiors = getActors();
+            List<String> actors = getActors();
             URL imdbLink = getImdbLink();
             String watchedDate = getWatchedDate();
 
-            return Movie.of(title,genres,language,contry,releaseYear,director,actiors,imdbLink,watchedDate);
-
+            return Movie.of(title, genres, language, country, releaseYear, director, actors, imdbLink, watchedDate);
         }
 
     }
