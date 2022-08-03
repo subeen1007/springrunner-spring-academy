@@ -3,6 +3,8 @@ package moviebuddy.domain;
 import moviebuddy.MovieBuddyFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
 
@@ -11,17 +13,17 @@ import java.util.List;
  */
 public class MovieFinderTest {
 
-    MovieBuddyFactory movieBuddyFactory = new MovieBuddyFactory(); //객체를 생성하는 쪽과 사용하는 쪽 분
-    MovieFinder movieFinder = movieBuddyFactory.movieFinder();
+    final ApplicationContext applicationContext = new AnnotationConfigApplicationContext(MovieBuddyFactory.class);
+    final MovieFinder movieFinder = applicationContext.getBean(MovieFinder.class);
 
     @Test
-    void NotEmpty_directedBy(){
+    void NotEmpty_directedBy() {
         List<Movie> movies = movieFinder.directedBy("Michael Bay");
         Assertions.assertEquals(3, movies.size());
     }
 
     @Test
-    void NotEmpty_ReleasedYearBy(){
+    void NotEmpty_ReleasedYearBy() {
         List<Movie> movies = movieFinder.releasedYearBy(2015);
         Assertions.assertEquals(225, movies.size());
     }
