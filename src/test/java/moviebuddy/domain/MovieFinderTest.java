@@ -1,5 +1,7 @@
 package moviebuddy.domain;
 
+import moviebuddy.MovieBuddyFactory;
+
 import java.util.List;
 
 /**
@@ -8,7 +10,9 @@ import java.util.List;
 public class MovieFinderTest {
 
     public static void main(String[] args) {
-        MovieFinder movieFinder = new MovieFinder(new CsvMovieReader());
+        MovieBuddyFactory movieBuddyFactory = new MovieBuddyFactory(); //객체를 생성하는 쪽과 사용하는 쪽 분
+        MovieFinder movieFinder = movieBuddyFactory.movieFinder();
+
         List<Movie> result = movieFinder.directedBy("Michael Bay");
         assertEquals(3, result.size());
 
