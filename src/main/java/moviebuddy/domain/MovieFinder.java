@@ -1,13 +1,18 @@
 package moviebuddy.domain;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MovieFinder {
+@Service//스프링 컨테이너에 발견됨 > 컨테이너에 등록(IoC??)
+public class MovieFinder  {
 
     private final MovieReader movieReader;
 
+//    @Autowired//의존관계 주입(DI)
     public MovieFinder(MovieReader movieReader){
         this.movieReader = Objects.requireNonNull(movieReader);
     }
