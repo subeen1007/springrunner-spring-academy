@@ -2,6 +2,7 @@ package moviebuddy.domain;
 
 import moviebuddy.ApplicationException;
 import moviebuddy.util.FileSystemUtils;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Component
 public class CsvMovieReader implements MovieReader {
 
     /**
