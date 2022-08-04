@@ -1,14 +1,11 @@
 package moviebuddy;
 
-import moviebuddy.domain.CsvMovieReader;
-import moviebuddy.domain.MovieFinder;
-import moviebuddy.domain.MovieReader;
-import org.springframework.context.annotation.*;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
-//@ComponentScan(basePackages = {"moviebuddy"})
-@Repository
+@ComponentScan(basePackages = {"moviebuddy"})
 @Import({MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class})   //빈구성정보를 불러옴
 public class MovieBuddyFactory {
 
@@ -19,10 +16,7 @@ public class MovieBuddyFactory {
 
     @Configuration
     static class DataSourceModuleConfig{
-        @Bean
-        public MovieReader movieReader(){
-            return new CsvMovieReader();
-        }
+
     }
 
 }
