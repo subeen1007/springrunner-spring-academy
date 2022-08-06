@@ -30,20 +30,7 @@ import java.util.stream.Collectors;
 
 @Profile(MovieBuddyProfile.CSV_MODE)
 @Repository
-public class CsvMovieReader implements MovieReader {
-
-    private final Logger log = LoggerFactory.getLogger(getClass());
-
-    private String metadata;
-
-    public String getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
-    }
-
+public class CsvMovieReader extends AbstractFileSystemMovieReader implements MovieReader {
 
 
     /**
@@ -87,20 +74,4 @@ public class CsvMovieReader implements MovieReader {
         }
     }
 
-    @PostConstruct
-    public void afterPropertiesSet() throws Exception {
-        URL metadataUrl = ClassLoader.getSystemResource(metadata);
-        if(Objects.isNull(metadataUrl)){
-            throw new FileNotFoundException(metadata);
-        }
-
-        if(Files.isReadable(Path.of(metadataUrl.toURI())) == false){
-            throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
-        }
-    }
-
-    @PreDestroy
-    public void destroy() throws Exception {
-        log.info("Destoryed bean");
-    }
 }
