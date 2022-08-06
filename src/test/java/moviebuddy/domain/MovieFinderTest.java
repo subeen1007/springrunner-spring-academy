@@ -5,6 +5,7 @@ import moviebuddy.MovieBuddyProfile;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -21,6 +22,7 @@ public class MovieFinderTest {
 
 //    필드에서 주입 but 권장X(테스트시 어려움 있음)
     @Autowired MovieFinder movieFinder;
+    @Autowired ApplicationContext applicationContext;
 
 //    생성자주입
 //    @Autowired
@@ -43,6 +45,11 @@ public class MovieFinderTest {
     void NotEmpty_ReleasedYearBy() {
         List<Movie> movies = movieFinder.releasedYearBy(2015);
         Assertions.assertEquals(225, movies.size());
+    }
+
+    @Test
+    void Equals_MovieFinderBean() {
+        Assertions.assertEquals(movieFinder, applicationContext.getBean(MovieFinder.class));
     }
 
 }
