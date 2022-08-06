@@ -12,12 +12,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
+import moviebuddy.MovieBuddyProfile;
 import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieReader;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import moviebuddy.ApplicationException;
 
+@Profile(MovieBuddyProfile.XML_MODE)
 @Repository
 public class JaxbMovieReader implements MovieReader {
 

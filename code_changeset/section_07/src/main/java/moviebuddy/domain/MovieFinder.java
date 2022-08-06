@@ -12,7 +12,7 @@ public class MovieFinder {
 	
 	private final MovieReader movieReader;
 
-	public MovieFinder(@Qualifier("jaxbMovieReader") MovieReader movieReader) {
+	public MovieFinder(MovieReader movieReader) {
 		this.movieReader = Objects.requireNonNull(movieReader);
 	}
 	

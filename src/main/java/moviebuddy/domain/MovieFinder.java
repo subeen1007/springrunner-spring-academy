@@ -13,7 +13,7 @@ public class MovieFinder  {
     private final MovieReader movieReader;
 
 //    @Autowired//의존관계 주입(DI)
-    public MovieFinder(@Qualifier("csvMovieReader") MovieReader movieReader) {
+    public MovieFinder(MovieReader movieReader) {
         this.movieReader = Objects.requireNonNull(movieReader);
     }
     /**
