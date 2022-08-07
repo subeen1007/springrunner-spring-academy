@@ -33,7 +33,10 @@ public abstract class AbstractFileSystemMovieReader implements MovieReader {
 
     @PostConstruct
     public void afterPropertiesSet() throws Exception {
-        URL metadataUrl = ClassLoader.getSystemResource(getMetadata());
+//        ClassLoader.getSystemResource(getMetadata()); 클래스패스 상의 자원만 처리할 수 있다
+//        file: ,htpt:, ftp:
+        
+        URL metadataUrl = getMetadataUrl();
         if (Objects.isNull(metadataUrl)) {
             throw new FileNotFoundException(metadata);
         }
@@ -41,6 +44,16 @@ public abstract class AbstractFileSystemMovieReader implements MovieReader {
         if (Files.isReadable(Path.of(metadataUrl.toURI())) == false) {
             throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
         }
+    }
+
+    public URL getMetadataUrl() {
+        String location = getMetadata();
+        if(location.startsWith("file:")){
+            //file URl
+        }else if(location.startsWith("http:")){
+            //http URL
+        }
+        return ClassLoader.getSystemResource(location);
     }
 
     @PreDestroy
