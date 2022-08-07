@@ -15,12 +15,15 @@ import org.slf4j.LoggerFactory;
 import moviebuddy.ApplicationException;
 import moviebuddy.domain.MovieReader;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
-public abstract class AbstractFileSystemMovieReader implements MovieReader {
+public abstract class AbstractMetadataResourceMovieReader implements MovieReader, ResourceLoaderAware {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     private String metadata;
+    private ResourceLoader resourceLoader;
 
     public String getMetadata() {
         return metadata;
@@ -31,21 +34,6 @@ public abstract class AbstractFileSystemMovieReader implements MovieReader {
         this.metadata = Objects.requireNonNull(metadata, "metadata is a required value.");
     }
 
-    @PostConstruct
-    public void afterPropertiesSet() throws Exception {
-//        ClassLoader.getSystemResource(getMetadata()); 클래스패스 상의 자원만 처리할 수 있다
-//        file: ,htpt:, ftp:
-        
-        URL metadataUrl = getMetadataUrl();
-        if (Objects.isNull(metadataUrl)) {
-            throw new FileNotFoundException(metadata);
-        }
-
-        if (Files.isReadable(Path.of(metadataUrl.toURI())) == false) {
-            throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
-        }
-    }
-
     public URL getMetadataUrl() {
         String location = getMetadata();
         if(location.startsWith("file:")){
@@ -54,6 +42,31 @@ public abstract class AbstractFileSystemMovieReader implements MovieReader {
             //http URL
         }
         return ClassLoader.getSystemResource(location);
+    }
+
+    @Override
+    public void setResourceLoader(ResourceLoader resourceLoader){
+        this.resourceLoader = resourceLoader;
+    }
+
+    public Resource getMetadataResource(){
+        return resourceLoader.getResource(getMetadata());
+    }
+
+    @PostConstruct
+    public void afterPropertiesSet() throws Exception {
+//        ClassLoader.getSystemResource(getMetadata()); 클래스패스 상의 자원만 처리할 수 있다
+//        file: ,htpt:, ftp:
+
+        Resource resource = getMetadataResource();
+        if(!resource.exists()){
+            throw new FileNotFoundException(metadata);
+        }
+        if(!resource.isReadable()){
+            throw new ApplicationException(String.format("cannot read to metadata. [%s]", metadata));
+        }
+
+        log.info(resource + " is ready");
     }
 
     @PreDestroy

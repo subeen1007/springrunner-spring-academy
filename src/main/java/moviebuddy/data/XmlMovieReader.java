@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
@@ -24,7 +22,7 @@ import moviebuddy.ApplicationException;
 
 @Profile(MovieBuddyProfile.XML_MODE)
 @Repository
-public class XmlMovieReader extends AbstractFileSystemMovieReader implements MovieReader {
+public class XmlMovieReader extends AbstractMetadataResourceMovieReader implements MovieReader {
 
     private final Unmarshaller unmarshaller;
 
@@ -35,7 +33,7 @@ public class XmlMovieReader extends AbstractFileSystemMovieReader implements Mov
     @Override
     public List<Movie> loadMovies() {
         try {
-            final InputStream content = ClassLoader.getSystemResourceAsStream(getMetadata());
+            final InputStream content = getMetadataResource().getInputStream();
             final Source source = new StreamSource(content);
             final MovieMetadata metadata = (MovieMetadata) unmarshaller.unmarshal(source);
 
