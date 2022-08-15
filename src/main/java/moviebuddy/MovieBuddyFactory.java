@@ -1,16 +1,13 @@
 package moviebuddy;
 
-import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import moviebuddy.data.CsvMovieReader;
-import moviebuddy.domain.Movie;
-import org.checkerframework.checker.units.qual.C;
+import moviebuddy.data.CachingMovieReader;
+import moviebuddy.domain.MovieReader;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.*;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
@@ -42,6 +39,11 @@ public class MovieBuddyFactory {
     @Configuration
     static class DataSourceModuleConfig{
 
+        @Primary
+        @Bean
+        public MovieReader cachingMovieReader(CacheManager cacheManager, MovieReader target) {
+            return new CachingMovieReader(cacheManager, target);
+        }
     }
 
 }
