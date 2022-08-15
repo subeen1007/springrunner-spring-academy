@@ -2,12 +2,12 @@ package moviebuddy;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import moviebuddy.cache.CachingAdvice;
-import moviebuddy.data.CachingMovieReader;
-import moviebuddy.domain.MovieReader;
-import org.springframework.aop.framework.ProxyFactoryBean;
+import org.aopalliance.aop.Advice;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.*;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
@@ -34,6 +34,19 @@ public class MovieBuddyFactory {
         return cacheManager;
     }
 
+    @Bean
+    public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
+        return new DefaultAdvisorAutoProxyCreator();
+    }
+
+    @Bean
+    public Advisor cachingAdvisor(CacheManager cacheManager){
+        Advice advice = new CachingAdvice(cacheManager);
+        //Advisor = PointCut(대상 선정 알고리즘) + Advice(부가기능)
+        return new DefaultPointcutAdvisor(advice);
+
+    }
+
     @Configuration
     static class DomainModuleConfig{
 
@@ -42,20 +55,6 @@ public class MovieBuddyFactory {
     @Configuration
     static class DataSourceModuleConfig{
 
-        @Primary
-        @Bean
-        public ProxyFactoryBean chchingMovieReaderFactory(ApplicationContext applicationContext) {
-            MovieReader target = applicationContext.getBean(MovieReader.class);
-            CacheManager cacheManager = applicationContext.getBean(CacheManager.class);
-
-            ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
-            proxyFactoryBean.setTarget(target);
-
-            //클래스 프락시 활성화(true)/ 비활성화(false, 기본값)
-//            proxyFactoryBean.setProxyTargetClass(true);
-            proxyFactoryBean.addAdvice(new CachingAdvice(cacheManager));
-            return proxyFactoryBean;
-        }
     }
 
 }
