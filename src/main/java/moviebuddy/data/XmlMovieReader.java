@@ -1,16 +1,6 @@
 package moviebuddy.data;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-
+import moviebuddy.ApplicationException;
 import moviebuddy.MovieBuddyProfile;
 import moviebuddy.domain.Movie;
 import moviebuddy.domain.MovieReader;
@@ -18,7 +8,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.stereotype.Repository;
 
-import moviebuddy.ApplicationException;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Profile(MovieBuddyProfile.XML_MODE)
 @Repository

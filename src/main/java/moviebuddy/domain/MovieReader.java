@@ -1,9 +1,9 @@
 package moviebuddy.domain;
 
-import moviebuddy.domain.Movie;
-
+import javax.cache.annotation.CacheResult;
 import java.util.List;
 
 public interface MovieReader {
+    @CacheResult(cacheName = "movies")
     List<Movie> loadMovies();
 }
