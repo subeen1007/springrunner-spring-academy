@@ -8,6 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.core.env.Environment;
 
@@ -30,9 +31,10 @@ public class MovieBuddyApplication {
 
     @Bean
     public MessageSource messageSource(){
-        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasename("messages");
         messageSource.setDefaultEncoding("utf-8");
+        messageSource.setCacheSeconds(5);
         return messageSource;
     }
     public static void main(String[] args) throws Exception {
@@ -45,7 +47,7 @@ public class MovieBuddyApplication {
      * (완료) 1. XML 문서로 작성된 영화 메타데이터도 다룰 수 있게 기능을 확장하라
      * (완료) 2. 영화 메타데이터 위치를 변경할 수 있도록 하라
      * (완료) 3. 영화 메타데이터 읽기 속도를 빠르게 하라
-     * TODO 4. 시스템 언어설정에 따라 애플리케이션 메시지가 영어 또는 한글로 출력되게 하라
+     * (완료) 4. 시스템 언어설정에 따라 애플리케이션 메시지가 영어 또는 한글로 출력되게 하라
      */
 
     public void run(String[] args) throws Exception {
