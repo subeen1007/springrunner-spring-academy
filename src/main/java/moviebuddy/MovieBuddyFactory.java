@@ -1,27 +1,22 @@
 package moviebuddy;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import moviebuddy.cache.CachingAdvice;
-import moviebuddy.cache.CachingAspect;
-import org.aopalliance.aop.Advice;
-import org.springframework.aop.Advisor;
-import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
-import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.interceptor.*;
 import org.springframework.context.annotation.*;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
-import javax.cache.annotation.CacheResult;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
 @ComponentScan(basePackages = {"moviebuddy"})
 @PropertySource("/application.properties")
 @Import({MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class})   //빈구성정보를 불러옴
-@EnableAspectJAutoProxy
-public class MovieBuddyFactory {
+@EnableCaching
+public class MovieBuddyFactory implements CachingConfigurer {
 
     @Bean
     public Jaxb2Marshaller jaxb2Marshaller(){
@@ -53,12 +48,36 @@ public class MovieBuddyFactory {
         return new DefaultPointcutAdvisor(pointcut, advice);
 
     }
-    */
 
     @Bean
     public CachingAspect cachingAspect(CacheManager cacheManager){
         return new CachingAspect(cacheManager);
     }
+     */
+
+    @Override
+    public CacheManager cacheManager() {
+        return caffeineCashManager();
+    }
+
+    @Override
+    public CacheResolver cacheResolver() {
+        return new SimpleCacheResolver(caffeineCashManager());
+    }
+
+    @Override
+    public KeyGenerator keyGenerator() {
+        return new SimpleKeyGenerator();
+    }
+
+    @Override
+    public CacheErrorHandler errorHandler() {
+//        @EnableAsync 0> AsyncConfigurer
+//        @EnableScheduling ->SchedulingConfigurer
+
+        return new SimpleCacheErrorHandler();
+    }
+
     @Configuration
     static class DomainModuleConfig{
 
