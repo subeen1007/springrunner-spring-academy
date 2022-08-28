@@ -2,6 +2,7 @@ package moviebuddy;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import moviebuddy.cache.CachingAdvice;
+import moviebuddy.cache.CachingAspect;
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 @ComponentScan(basePackages = {"moviebuddy"})
 @PropertySource("/application.properties")
 @Import({MovieBuddyFactory.DomainModuleConfig.class, MovieBuddyFactory.DataSourceModuleConfig.class})   //빈구성정보를 불러옴
+@EnableAspectJAutoProxy
 public class MovieBuddyFactory {
 
     @Bean
@@ -36,6 +38,7 @@ public class MovieBuddyFactory {
         return cacheManager;
     }
 
+    /*
     @Bean
     public DefaultAdvisorAutoProxyCreator defaultAdvisorAutoProxyCreator(){
         return new DefaultAdvisorAutoProxyCreator();
@@ -50,7 +53,12 @@ public class MovieBuddyFactory {
         return new DefaultPointcutAdvisor(pointcut, advice);
 
     }
+    */
 
+    @Bean
+    public CachingAspect cachingAspect(CacheManager cacheManager){
+        return new CachingAspect(cacheManager);
+    }
     @Configuration
     static class DomainModuleConfig{
 
